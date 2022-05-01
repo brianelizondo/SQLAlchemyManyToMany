@@ -29,7 +29,7 @@ def show_users():
     Show all users
     Links to view the detail page for the user and a link to the add-user form
     """
-    users = User.query.all()
+    users = User.query.order_by(User.last_name).all()
     return render_template("users.html", users=users)
 
 @app.route("/users/new")
