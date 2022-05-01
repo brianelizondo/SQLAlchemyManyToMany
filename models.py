@@ -19,3 +19,6 @@ class User(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     image_url = db.Column(db.Text, nullable=True, default=None)
 
+    def get_full_name(self):
+        """Get the user full name"""
+        return f"{self.first_name} {self.last_name}"
