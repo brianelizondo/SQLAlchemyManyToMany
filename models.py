@@ -22,3 +22,7 @@ class User(db.Model):
     def get_full_name(self):
         """Get the user full name"""
         return f"{self.first_name} {self.last_name}"
+
+    full_name = property(
+        fget = get_full_name
+    )
