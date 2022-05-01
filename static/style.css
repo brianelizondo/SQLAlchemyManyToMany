@@ -1,0 +1,16 @@
+body{
+    padding: 50px 50px;
+}
+ul li{
+    text-transform: capitalize;
+}
+.form-label{
+    margin-top: 20px !important;
+    margin-bottom: none !important;
+}
+.user_name{
+    text-transform: capitalize;
+}
+.image_profile{
+    max-width: 100%;
+}

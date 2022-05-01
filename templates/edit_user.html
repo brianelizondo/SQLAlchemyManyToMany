@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Edit a User{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Edit a user</h1>
+        
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for msg in messages %}
+      <div class="alert alert-danger" role="alert">{{ msg }}</div>
+              {% endfor %}
+          {% endif %}
+      {% endwith %}
+  
+      <form action="/users/{{ user.id }}/edit" method="post">
+        <div class="col-auto">
+          <label for="first_name" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter a first name" value="{{ user.first_name }}">
+        </div>
+        <div class="col-auto">
+          <label for="last_name" class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter a last name" value="{{ user.last_name }}">
+        </div>
+        <div class="col-auto">
+          <label for="image_url" class="form-label">Image URL</label>
+          <input type="text" class="form-control" id="image_url" name="image_url" placeholder="Provide an image url of this user" value="{{ user.image_url }}">
+        </div>
+        <div class="col-auto text-right mt-3">
+          <a class="btn btn-outline-secondary btn-sm" href="/users/{{ user.id }}" role="button">Cancel</a>
+          <button type="submit" class="btn btn-success btn-sm">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
