@@ -26,3 +26,17 @@ class User(db.Model):
     full_name = property(
         fget = get_full_name
     )
+
+
+class Post(db.Model):
+     """Create a Post model for SQLAlchemy"""
+
+     __tablename__ = "post"
+
+     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+     title = db.Column(db.String(100), nullable=False)
+     content = db.Column(db.Text, nullable=False)
+     created_at = db.Column(db.DateTime, nullable=False)
+     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+     users = db.relationship( 'User', backref='posts')
