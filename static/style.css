@@ -25,4 +25,9 @@ ul li{
 .post_author{
     font-style: italic;
     font-size: 12px;
+    line-height:10px;
+    text-transform: capitalize;
+}
+.post_author_2{
+    font-size: 12px;
 }

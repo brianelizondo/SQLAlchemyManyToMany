@@ -3,6 +3,7 @@
 from crypt import methods
 from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
+from sqlalchemy import desc
 from models import db, connect_db, User, Post
 from datetime import datetime
 
@@ -21,8 +22,14 @@ connect_db(app)
 
 @app.route("/")
 def home_page():
-    """Redirect to list of users"""
-    return redirect("/users")
+    """Homepage that shows the 5 most recent posts"""
+    posts = Post.query.order_by(desc(Post.id)).limit(5).all()
+    
+    for post in posts:
+        date_object = datetime.strptime(str(post.created_at), "%Y-%m-%d %H:%M:%S")
+        post.created_at = date_object.strftime("%a %b %-d %Y, %-I:%M %p")
+
+    return render_template("home.html", posts=posts)
 
 
 # Routes for Users
