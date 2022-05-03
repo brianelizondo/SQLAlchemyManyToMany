@@ -20,6 +20,11 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 # db.create_all()
 
+@app.errorhandler(404)
+def page_not_found(e):
+    """Custom 404 Error Page"""
+    return render_template('404.html'), 404
+
 @app.route("/")
 def home_page():
     """Homepage that shows the 5 most recent posts"""
