@@ -3,7 +3,8 @@
 from crypt import methods
 from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "abcd1234"
@@ -23,6 +24,8 @@ def home_page():
     """Redirect to list of users"""
     return redirect("/users")
 
+
+# Routes for Users
 @app.route("/users")
 def show_users():
     """
@@ -37,7 +40,7 @@ def add_user_form():
     """
     Show an add form for users
     """
-    return render_template("new_user.html")
+    return render_template("user_new.html")
 
 
 @app.route("/users/new", methods=["POST"])
@@ -87,7 +90,7 @@ def users_edit(user_id):
     Have a cancel button that returns to the detail page for a user, and a save button that updates the user.
     """
     user = User.query.get(user_id)
-    return render_template("edit_user.html", user=user)
+    return render_template("user_edit.html", user=user)
 
 
 @app.route("/users/<int:user_id>/edit", methods=["POST"])
@@ -132,3 +135,94 @@ def users_delete(user_id):
     db.session.commit()
     flash("The user was successfully deleted")
     return redirect("/users")
+
+
+# Routes for Posts
+@app.route("/users/<int:user_id>/posts/new")
+def add_post_form(user_id):
+    """
+    Show form to add a post for that user
+    """
+    user = User.query.get(user_id)
+    return render_template("post_new.html", user=user)
+
+@app.route("/users/<int:user_id>/posts/new", methods=["POST"])
+def add_post_process(user_id):
+    """
+    Handle add form; add post and redirect to the user detail page
+    """
+    post_title = request.form["post_title"]
+    post_content = request.form["post_content"]
+    post_created = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+
+    valid_fields = True
+    if len(post_title) == 0:
+        valid_fields = False
+        flash("Please enter the post title")
+    if len(post_content) == 0:
+        valid_fields = False
+        flash("Please enter the post content")
+
+    if valid_fields:
+        new_post = Post(title=post_title, content=post_content, created_at=post_created)
+        db.session.add(new_post)
+        db.session.commit()
+        flash("The post was added successfully")
+    
+    return redirect(f'/users/{ user_id }')
+
+
+@app.route("/posts/<int:post_id>")
+def posts_details(post_id):
+    """
+    Show a post.
+    Show buttons to edit and delete the post.
+    """
+    post = Post.query.get(post_id)
+    return render_template("post_details.html", post=post)
+
+@app.route("/posts/<int:post_id>/edit")
+def posts_edit(post_id):
+    """
+    Show form to edit a post, and to cancel (back to user page).
+    """
+    post = Post.query.get(post_id)
+    return render_template("post_edit.html", post=post)
+
+@app.route("/posts/<int:post_id>/edit", methods=["GET", "POST"])
+def posts_edit_process(post_id):
+    """
+    Handle editing of a post. Redirect back to the post view.
+    """
+    update_post = Post.query.get(post_id)
+    post_title = request.form["post_title"]
+    post_content = request.form["post_content"]
+
+    valid_fields = True
+    if len(post_title) == 0:
+        valid_fields = False
+        flash("Please enter the post title")
+    if len(post_content) == 0:
+        valid_fields = False
+        flash("Please enter the post content")
+
+    if valid_fields:
+        update_post.title = post_title
+        update_post.content = post_content
+        db.session.add(update_post)
+        db.session.commit()
+        flash("The post was successfully modified")
+        return redirect(f'/posts/{ post_id }')
+    else:
+        return redirect(f'/posts/{ post_id }/edit')
+
+@app.route("/posts/<int:post_id>/delete", methods=["GET", "POST"])
+def posts_delete(post_id):
+    """
+    Delete the post.
+    """
+    delete_post = Post.query.get(post_id)
+    Post.query.filter_by(id=post_id).delete()
+    db.session.commit()
+    flash("The post was successfully deleted")
+    return redirect(f'/users/{ delete_post.user_id }')
