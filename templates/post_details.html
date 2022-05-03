@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Post Details{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1 class="text-capitalize">{{ post.title }}</h1>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for msg in messages %}
+      <div class="alert alert-success" role="alert">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <p class="text-start mt-4">{{ post.content }}</p>
+      <p class="text-start mb-4 post_author"> By {{ post.users.full_name }}</p>
+      <a class="btn btn-outline-secondary btn-sm" href="/users/{{ post.user_id }}" role="button">Go Back</a>
+      <a class="btn btn-primary btn-sm" href="/posts/{{ post.id }}/edit" role="button">Edit</a>
+      <a class="btn btn-danger btn-sm" href="/posts/{{ post.id }}/delete" role="button">Delete</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

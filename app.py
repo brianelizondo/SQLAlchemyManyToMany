@@ -80,7 +80,8 @@ def users_details(user_id):
     Have a button to get to their edit page, and to delete the user.
     """
     user = User.query.get(user_id)
-    return render_template("user_details.html", user=user)
+    posts = Post.query.filter_by(user_id=user_id).all()
+    return render_template("user_details.html", user=user, posts=posts)
 
 
 @app.route("/users/<int:user_id>/edit")
@@ -164,12 +165,13 @@ def add_post_process(user_id):
         flash("Please enter the post content")
 
     if valid_fields:
-        new_post = Post(title=post_title, content=post_content, created_at=post_created)
+        new_post = Post(title=post_title, content=post_content, created_at=post_created, user_id=user_id)
         db.session.add(new_post)
         db.session.commit()
         flash("The post was added successfully")
-    
-    return redirect(f'/users/{ user_id }')
+        return redirect(f'/users/{ user_id }')
+    else:
+        return redirect(f'/users/{ user_id }/posts/new')
 
 
 @app.route("/posts/<int:post_id>")

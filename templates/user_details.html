@@ -13,6 +13,23 @@
       <a class="btn btn-outline-secondary btn-sm" href="/users" role="button">Go Back</a>
       <a class="btn btn-primary btn-sm" href="/users/{{ user.id }}/edit" role="button">Edit</a>
       <a class="btn btn-danger btn-sm" href="/users/{{ user.id }}/delete" role="button">Delete</a>
+
+      <h3 class="mt-4">Posts</h3>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for msg in messages %}
+      <div class="alert alert-success" role="alert">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <div class="row">
+        <ul>
+          {% for post in posts %}
+          <li class="post_link"><a href="/posts/{{ post.id }}">{{ post.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <a class="btn btn-primary btn-sm" href="/users/{{ user.id }}/posts/new" role="button">Add Post</a>
     </div>
   </div>
 </div>

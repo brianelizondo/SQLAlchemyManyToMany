@@ -14,3 +14,15 @@ ul li{
 .image_profile{
     max-width: 100%;
 }
+.post_link{
+    font-size: 13px;
+    line-height: 20px;
+}
+.post_author{
+    font-style: italic;
+    font-size: 12px;
+}
+.post_author{
+    font-style: italic;
+    font-size: 12px;
+}
