@@ -19,6 +19,8 @@ class User(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     image_url = db.Column(db.Text, nullable=True, default=None)
 
+    posts = db.relationship('Post', cascade="all, delete", passive_deletes=True)
+
     def get_full_name(self):
         """Get the user full name"""
         return f"{self.first_name} {self.last_name}"
@@ -37,6 +39,7 @@ class Post(db.Model):
      title = db.Column(db.String(100), nullable=False)
      content = db.Column(db.Text, nullable=False)
      created_at = db.Column(db.DateTime, nullable=False)
-     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"))
 
-     users = db.relationship( 'User', backref='posts')
+     # users = db.relationship('User', backref='posts')
+     users = db.relationship('User')
