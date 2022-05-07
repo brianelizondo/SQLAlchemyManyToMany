@@ -4,7 +4,7 @@ from crypt import methods
 from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy import desc
-from models import db, connect_db, User, Post
+from models import Tag, db, connect_db, User, Post
 from datetime import datetime
 
 app = Flask(__name__)
@@ -240,3 +240,89 @@ def posts_delete(post_id):
     db.session.commit()
     flash("The post was successfully deleted")
     return redirect(f'/users/{ delete_post.user_id }')
+
+
+# Routes for Tags
+@app.route("/tags")
+def show_tagss():
+    """
+    Lists all tags, with links to the tag detail page
+    """
+    tags = Tag.query.all()
+    return render_template("tags.html", tags=tags)
+
+@app.route("/tags/<int:tag_id>")
+def tags_details(tag_id):
+    """
+    Show detail about a tag. Have links to edit form and to delete
+    """
+    tag = Tag.query.get(tag_id)
+    return render_template("tag_details.html", tag=tag)
+
+@app.route("/tags/new")
+def add_tag_form():
+    """
+    Shows a form to add a new tag
+    """
+    return render_template("tag_new.html")
+
+@app.route("/users/new", methods=["POST"])
+def add_tag_process():
+    """
+    Process add form, adds tag, and redirect to tag list
+    """
+    tag_name = request.form["name"].lower()
+
+    valid_fields = True
+    if len(tag_name) == 0:
+        valid_fields = False
+        flash("Please enter the tag name")
+
+    if valid_fields:
+        new_tag = Tag(name=tag_name)
+        db.session.add(new_tag)
+        db.session.commit()
+        flash("The tag was added successfully")
+        return redirect("/tags")
+    else:
+        return redirect("/tags/new")
+
+@app.route("/tags/<int:tag_id>/edit")
+def tags_edit(tag_id):
+    """
+    Show edit form for a tag
+    """
+    tag = Tag.query.get(tag_id)
+    return render_template("tag_edit.html", tag=tag)
+
+@app.route("/tags/<int:tag_id>/edit", methods=["GET", "POST"])
+def tags_edit_process(tag_id):
+    """
+    Process edit form, edit tag, and redirects to the tags list
+    """
+    update_tag = Tag.query.get(tag_id)
+    tag_name = request.form["name"]
+
+    valid_fields = True
+    if len(tag_name) == 0:
+        valid_fields = False
+        flash("Please enter the tag name")
+
+    if valid_fields:
+        update_tag.name = tag_name
+        db.session.add(update_tag)
+        db.session.commit()
+        flash("The tag was successfully modified")
+        return redirect(f'/tags/{ tag_id }')
+    else:
+        return redirect(f'/tags/{ tag_id }/edit')
+
+@app.route("/tags/<int:tag_id>/delete", methods=["GET", "POST"])
+def tags_delete(tag_id):
+    """
+    Delete the tag.
+    """
+    Tag.query.filter_by(id=tag_id).delete()
+    db.session.commit()
+    flash("The tag was successfully deleted")
+    return redirect("/tags")
