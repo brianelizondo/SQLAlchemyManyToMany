@@ -277,7 +277,8 @@ def add_tag_form():
     """
     Shows a form to add a new tag
     """
-    return render_template("tag_new.html")
+    posts = Post.query.all()
+    return render_template("tag_new.html", posts=posts)
 
 @app.route("/tags/new", methods=["POST"])
 def add_tag_process():
@@ -286,13 +287,16 @@ def add_tag_process():
     """
     tag_name = request.form["name"].lower()
 
+    posts_id = [int(id) for id in request.form.getlist("posts")]
+    posts_list = Post.query.filter(Post.id.in_(posts_id)).all()
+
     valid_fields = True
     if len(tag_name) == 0:
         valid_fields = False
         flash("Please enter a name for the tag")
 
     if valid_fields:
-        new_tag = Tag(name=tag_name)
+        new_tag = Tag(name=tag_name, posts=posts_list)
         db.session.add(new_tag)
         db.session.commit()
         flash("The tag was added successfully")
