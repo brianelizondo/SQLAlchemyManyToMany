@@ -52,7 +52,7 @@ class Post(db.Model):
 
      # users = db.relationship('User', backref='posts')
      users = db.relationship('User')
-     tags = db.relationship('Tag', secondary='posts_tags', backref='posts')
+     tags = db.relationship('Tag', secondary='posts_tags', backref='posts', cascade="all, delete", passive_deletes=True)
 
 
 class PostTag(db.Model):
@@ -60,8 +60,8 @@ class PostTag(db.Model):
 
     __tablename__ = "posts_tags"
 
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False, primary_key=True)
-    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id'), nullable=False, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id', ondelete="CASCADE"), nullable=False, primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tag.id', ondelete="CASCADE"), nullable=False, primary_key=True)
     
 
 class Tag(db.Model):
