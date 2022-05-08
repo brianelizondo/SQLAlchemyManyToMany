@@ -1,4 +1,4 @@
-from models import db, User, Post
+from models import db, User, Post, Tag, PostTag
 from app import app
 
 # Create all tables
@@ -31,5 +31,39 @@ data_3 = Post(title="flask is awesome", content="post content 3...!", created_at
 db.session.add(data_1)
 db.session.add(data_2)
 db.session.add(data_3)
+# Commit--otherwise, this never gets saved!
+db.session.commit()
+
+
+# If table isn't empty, empty it
+Tag.query.delete()
+# Add new data
+data_1 = Tag(name="fun")
+data_2 = Tag(name="even more")
+data_3 = Tag(name="bloop")
+data_4 = Tag(name="zope")
+# Add new objects to session, so they'll persist
+db.session.add(data_1)
+db.session.add(data_2)
+db.session.add(data_3)
+db.session.add(data_4)
+# Commit--otherwise, this never gets saved!
+db.session.commit()
+
+
+# If table isn't empty, empty it
+PostTag.query.delete()
+# Add new data
+data_1 = PostTag(post_id="1", tag_id="1")
+data_2 = PostTag(post_id="1", tag_id="2")
+data_3 = PostTag(post_id="1", tag_id="3")
+data_4 = PostTag(post_id="1", tag_id="4")
+data_5 = PostTag(post_id="2", tag_id="2")
+# Add new objects to session, so they'll persist
+db.session.add(data_1)
+db.session.add(data_2)
+db.session.add(data_3)
+db.session.add(data_4)
+db.session.add(data_5)
 # Commit--otherwise, this never gets saved!
 db.session.commit()
