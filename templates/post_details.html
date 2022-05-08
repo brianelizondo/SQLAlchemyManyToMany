@@ -15,7 +15,7 @@
         {% endif %}
       {% endwith %}
       <p class="text-start mt-4">{{ post.content }}</p>
-      <p class="text-start mb-4 post_author"> By {{ post.users.full_name }}</p>
+      <p class="text-start mb-4 post_author"> By {{ post.users.full_name }} on {{ post.created_at }}</p>
       <div class="tags_list mb-3">Tags: 
         {% for tag in post.tags %}
         <a class="button_tag" href="/tags/{{ tag.id }}" role="button">{{ tag.name }}</a>

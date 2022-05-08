@@ -157,7 +157,8 @@ def add_post_form(user_id):
     Show form to add a post for that user
     """
     user = User.query.get(user_id)
-    return render_template("post_new.html", user=user)
+    tags = Tag.query.order_by('name').all()
+    return render_template("post_new.html", user=user, tags=tags)
 
 @app.route("/users/<int:user_id>/posts/new", methods=["POST"])
 def add_post_process(user_id):
@@ -168,6 +169,9 @@ def add_post_process(user_id):
     post_content = request.form["post_content"]
     post_created = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
 
+    tags_id = [int(id) for id in request.form.getlist("tags")]
+    tags = Tag.query.filter(Tag.id.in_(tags_id)).all()
+
     valid_fields = True
     if len(post_title) == 0:
         valid_fields = False
@@ -177,7 +181,7 @@ def add_post_process(user_id):
         flash("Please enter the post content")
 
     if valid_fields:
-        new_post = Post(title=post_title, content=post_content, created_at=post_created, user_id=user_id)
+        new_post = Post(title=post_title, content=post_content, created_at=post_created, user_id=user_id, tags=tags)
         db.session.add(new_post)
         db.session.commit()
         flash("The post was added successfully")
@@ -193,6 +197,9 @@ def posts_details(post_id):
     Show buttons to edit and delete the post.
     """
     post = Post.query.get(post_id)
+    date_object = datetime.strptime(str(post.created_at), "%Y-%m-%d %H:%M:%S")
+    post.created_at = date_object.strftime("%a %b %-d %Y, %-I:%M %p")
+    
     return render_template("post_details.html", post=post)
 
 @app.route("/posts/<int:post_id>/edit")
