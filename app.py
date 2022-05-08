@@ -310,7 +310,8 @@ def tags_edit(tag_id):
     Show edit form for a tag
     """
     tag = Tag.query.get(tag_id)
-    return render_template("tag_edit.html", tag=tag)
+    posts = Post.query.all()
+    return render_template("tag_edit.html", tag=tag, posts=posts)
 
 @app.route("/tags/<int:tag_id>/edit", methods=["GET", "POST"])
 def tags_edit_process(tag_id):
@@ -319,6 +320,8 @@ def tags_edit_process(tag_id):
     """
     update_tag = Tag.query.get(tag_id)
     tag_name = request.form["name"]
+    posts_id = [int(id) for id in request.form.getlist("posts")]
+    posts_list = Post.query.filter(Post.id.in_(posts_id)).all()
 
     valid_fields = True
     if len(tag_name) == 0:
@@ -327,6 +330,7 @@ def tags_edit_process(tag_id):
 
     if valid_fields:
         update_tag.name = tag_name
+        update_tag.posts = posts_list
         db.session.add(update_tag)
         db.session.commit()
         flash("The tag was successfully modified")
