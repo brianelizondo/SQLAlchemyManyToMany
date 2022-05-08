@@ -208,7 +208,8 @@ def posts_edit(post_id):
     Show form to edit a post, and to cancel (back to user page).
     """
     post = Post.query.get(post_id)
-    return render_template("post_edit.html", post=post)
+    tags = Tag.query.order_by('name').all()
+    return render_template("post_edit.html", post=post, tags=tags)
 
 @app.route("/posts/<int:post_id>/edit", methods=["GET", "POST"])
 def posts_edit_process(post_id):
@@ -218,6 +219,9 @@ def posts_edit_process(post_id):
     update_post = Post.query.get(post_id)
     post_title = request.form["post_title"]
     post_content = request.form["post_content"]
+
+    tags_id = [int(id) for id in request.form.getlist("tags")]
+    tags = Tag.query.filter(Tag.id.in_(tags_id)).all()
 
     valid_fields = True
     if len(post_title) == 0:
@@ -230,6 +234,7 @@ def posts_edit_process(post_id):
     if valid_fields:
         update_post.title = post_title
         update_post.content = post_content
+        update_post.tags = tags
         db.session.add(update_post)
         db.session.commit()
         flash("The post was successfully modified")
