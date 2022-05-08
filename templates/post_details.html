@@ -16,6 +16,11 @@
       {% endwith %}
       <p class="text-start mt-4">{{ post.content }}</p>
       <p class="text-start mb-4 post_author"> By {{ post.users.full_name }}</p>
+      <div class="tags_list mb-3">Tags: 
+        {% for tag in post.tags %}
+        <a class="button_tag" href="/tags/{{ tag.id }}" role="button">{{ tag.name }}</a>
+        {% endfor %}
+      </div>
       <a class="btn btn-outline-secondary btn-sm" href="/users/{{ post.user_id }}" role="button">Go Back</a>
       <a class="btn btn-primary btn-sm" href="/posts/{{ post.id }}/edit" role="button">Edit</a>
       <a class="btn btn-danger btn-sm" href="/posts/{{ post.id }}/delete" role="button">Delete</a>

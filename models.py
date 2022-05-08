@@ -12,6 +12,10 @@ def connect_db(app):
 
 class User(db.Model):
     """Create a User model for SQLAlchemy"""
+    def __repr__(self):
+        """Show info about User"""
+        u = self
+        return f"<User - ID: {u.id} Full_Name: {u.full_name}>"
 
     __tablename__ = "users"
 
@@ -33,6 +37,10 @@ class User(db.Model):
 
 class Post(db.Model):
      """Create a Post model for SQLAlchemy"""
+     def __repr__(self):
+        """Show info about Post"""
+        p = self
+        return f"<Post - ID: {p.id} Title: {p.title}>"
 
      __tablename__ = "post"
 
@@ -44,6 +52,7 @@ class Post(db.Model):
 
      # users = db.relationship('User', backref='posts')
      users = db.relationship('User')
+     tags = db.relationship('Tag', secondary='posts_tags', backref='posts')
 
 
 class PostTag(db.Model):
@@ -57,10 +66,12 @@ class PostTag(db.Model):
 
 class Tag(db.Model):
     """Create a Tag model for SQLAlchemy"""
+    def __repr__(self):
+        """Show info about Tag"""
+        t = self
+        return f"<Tag - ID: {t.id} name: {t.name}>"
 
     __tablename__ = "tag"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, nullable=False, unique=True)
-
-    posts = db.relationship('Post', secondary='posts_tags', backref='tag')

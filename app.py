@@ -248,7 +248,7 @@ def show_tagss():
     """
     Lists all tags, with links to the tag detail page
     """
-    tags = Tag.query.all()
+    tags = Tag.query.order_by('name').all()
     return render_template("tags.html", tags=tags)
 
 @app.route("/tags/<int:tag_id>")
@@ -257,7 +257,8 @@ def tags_details(tag_id):
     Show detail about a tag. Have links to edit form and to delete
     """
     tag = Tag.query.get(tag_id)
-    return render_template("tag_details.html", tag=tag)
+    posts = tag.posts
+    return render_template("tag_details.html", tag=tag, posts=posts)
 
 @app.route("/tags/new")
 def add_tag_form():
@@ -266,7 +267,7 @@ def add_tag_form():
     """
     return render_template("tag_new.html")
 
-@app.route("/users/new", methods=["POST"])
+@app.route("/tags/new", methods=["POST"])
 def add_tag_process():
     """
     Process add form, adds tag, and redirect to tag list
@@ -276,7 +277,7 @@ def add_tag_process():
     valid_fields = True
     if len(tag_name) == 0:
         valid_fields = False
-        flash("Please enter the tag name")
+        flash("Please enter a name for the tag")
 
     if valid_fields:
         new_tag = Tag(name=tag_name)
@@ -306,7 +307,7 @@ def tags_edit_process(tag_id):
     valid_fields = True
     if len(tag_name) == 0:
         valid_fields = False
-        flash("Please enter the tag name")
+        flash("Please enter a name for the tag")
 
     if valid_fields:
         update_tag.name = tag_name

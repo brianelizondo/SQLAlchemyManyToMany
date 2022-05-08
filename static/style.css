@@ -31,3 +31,25 @@ ul li{
 .post_author_2{
     font-size: 12px;
 }
+
+.tags_list{
+    font-size: 13px;
+    font-weight: bold;
+}
+.button_tag{
+    background-color: #0d6efd;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 2px 6px 3px 6px;
+    margin-left: 3px;
+    text-transform: capitalize;
+}
+.button_tag:hover{
+    background-color: #0e64e6;
+    color: white;
+    text-decoration: none;
+}

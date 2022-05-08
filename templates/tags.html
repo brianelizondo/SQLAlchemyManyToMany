@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}List of Tags{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+      <div class="col">
+        <h1>Tags</h1>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for msg in messages %}
+        <div class="alert alert-success" role="alert">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <ul>
+            {% for tag in tags %}
+            <li><a href="/tags/{{ tag.id }}">{{ tag.name }}</a></li>
+            {% endfor %}
+        </ul>
+        <a class="btn btn-primary btn-sm" href="/tags/new" role="button">Add Tag</a>
+      </div>
+    </div>
+</div>
+{% endblock %}
